@@ -1,3 +1,5 @@
+可以看：https://www.cnblogs.com/zhengzheng66/articles/12715938.html
+
 注意：我使用的是Interllij idea来编辑项目的，运行代码之前要自行下载一个tomcat，在项目中引入tomcat中lib文件夹中的jar包，这样可以使得我们不需要导入过多的包
 运行项目之前，还需要安装一个MySQL数据库，并使其运行，数据库名称和表名称都可以在下面参数中修改，可以参考我的数据表
 ```
