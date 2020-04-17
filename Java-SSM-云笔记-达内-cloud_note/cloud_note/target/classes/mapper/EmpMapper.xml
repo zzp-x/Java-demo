@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+ <mapper namespace="dao.EmpDao">
+ 	<!-- MYSQL：数据库自动生成主键，获取主键值，放入参数emp对象的id属性中 -->
+ 	<insert id="insert" parameterType="entity.Emp" useGeneratedKeys="true" keyProperty="id">
+ 		INSERT INTO emp(name, age) VALUES(#{name}, #{age})
+ 	</insert>
+ </mapper>

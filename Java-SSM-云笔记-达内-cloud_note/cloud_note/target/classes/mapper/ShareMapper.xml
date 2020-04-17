@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+ <mapper namespace="dao.ShareDao">
+ 	<insert id="insert" parameterType="entity.Share">
+ 		INSERT INTO cn_share (cn_share_id, cn_note_id, cn_share_title, cn_share_body) 
+ 			VALUES(#{cn_share_id}, #{cn_note_id}, #{cn_share_title}, #{cn_share_body})
+ 	</insert>
+ 	
+ 	<select id="search" parameterType="map" resultType="entity.Share">
+ 		SELECT cn_note_id,cn_share_title FROM cn_share WHERE cn_share_title LIKE #{value} LIMIT #{begin},3
+ 	</select>
+ </mapper>

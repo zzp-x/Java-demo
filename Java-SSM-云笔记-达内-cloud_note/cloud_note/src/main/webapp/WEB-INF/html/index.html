@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>index</title>
+<link rel="stylesheet" href="../static/layui/css/layui.css">
+</head>
+<body>
+	<script src="../static/js/jquery-3.3.1.js"></script>
+	<script src="../static/js/conf.js"></script>
+	<script src="../static/layui/layui.js"></script>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+		<div class="layui-header">
+			<div class="layui-logo">layui 后台布局</div>
+			<!-- 头部区域（可配合layui已有的水平导航） -->
+			<ul class="layui-nav layui-layout-left">
+				<li class="layui-nav-item"><a style="cursor: pointer;">控制台</a></li>
+				<li class="layui-nav-item"><a style="cursor: pointer;">商品管理</a></li>
+				<li class="layui-nav-item"><a style="cursor: pointer;">用户</a></li>
+				<li class="layui-nav-item"><a href="javascript:;">其它系统</a>
+					<dl class="layui-nav-child">
+						<dd>
+							<a style="cursor: pointer;">邮件管理</a>
+						</dd>
+						<dd>
+							<a style="cursor: pointer;">消息管理</a>
+						</dd>
+						<dd>
+							<a style="cursor: pointer;">授权管理</a>
+						</dd>
+					</dl>
+				</li>
+				<li class="layui-nav-item">
+					<input type="text" id="search" name="note" lay-verify="required" placeholder="搜索笔记" autocomplete="off" class="layui-input">
+				</li>
+			</ul>
+			
+			<ul class="layui-nav layui-layout-right">
+				<li class="layui-nav-item"><a href="javascript:;"> <img
+						src="http://t.cn/RCzsdCq" class="layui-nav-img"> 贤心
+				</a>
+					<dl class="layui-nav-child">
+						<dd>
+							<a href="">基本资料</a>
+						</dd>
+						<dd>
+							<a href="">安全设置</a>
+						</dd>
+					</dl></li>
+				<li class="layui-nav-item"><a style="cursor:pointer;" onclick="logout()">退了</a></li>
+			</ul>
+		</div>
+
+		<div class="layui-side layui-bg-black">
+			<div class="layui-side-scroll">
+				<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+				<ul class="layui-nav layui-nav-tree" lay-filter="test">
+					<li class="layui-nav-item"><a href="javascript:;">解决方案</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="javascript:;">列表一</a>
+							</dd>
+							<dd>
+								<a href="javascript:;">列表二</a>
+							</dd>
+							<dd>
+								<a href="">超链接</a>
+							</dd>
+						</dl></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="layui-body">
+			<!-- 内容主体区域 -->
+			<div style="padding: 15px;">
+				<table class="layui-table">
+					<colgroup>
+						<col width="150">
+						<col width="200">
+						<col>
+					</colgroup>
+					<thead>
+						<tr>
+							<th>笔记编号</th>
+							<th>笔记标题</th>
+							<th colspan="2">操作</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+						<tr>
+							<td>许闲心</td>
+							<td>2016-11-28</td>
+							<td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
+						</tr>
+					</tbody>
+				</table>
+			<form class="layui-form" action="" style="margin-top:40px;">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">是否新建</label>
+			    <div class="layui-input-block">
+			      <input type="checkbox" name="isNew" lay-skin="switch">
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">笔记标题</label>
+			    <div class="layui-input-block">
+			      <input type="text" id="note_title" name="note_title" required lay-verify="required" placeholder="请输入笔记标题" autocomplete="off" class="layui-input">
+			      <input type="hidden" id="note_id" name="note_id">
+			    </div>
+			  </div>
+			  <div class="layui-form-item layui-form-text">
+			    <label class="layui-form-label">笔记内容</label>
+			    <div class="layui-input-block">
+			      <textarea id="note_desc" name="note_desc" placeholder="请输入笔记内容" class="layui-textarea"></textarea>
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+			      <button type="reset" class="layui-btn layui-btn-primary">清空</button>
+			    </div>
+			  </div>
+			</form>
+			</div>
+		</div>
+
+		<div class="layui-footer">
+			<!-- 底部固定区域 -->
+			© layui.com - 底部固定区域
+		</div>
+	</div>
+
+	<a class="layui-btn layui-btn-normal" style="cursor: pointer;"
+		onclick="logout()">退出</a>
+	<script>
+		function logout() {
+			layui.use('form', function() {
+				var layer = layui.layer;
+				$.ajax({
+					url : "./logout.do",
+					dataType : "JSON",
+					success : function(res) {
+						if (res.status == 3) {
+							layer.msg(res.msg);
+							setTimeout(function() {
+								window.location.href = path + "/login.html";
+							}, 2000);
+						} else {
+							layer.msg("退出失败");
+						}
+					},
+					error : function() {
+						layer.msg("退出失败");
+					}
+				})
+			})
+		};
+
+		function findAllNote() {
+			layui.use('form',function() {
+				var layer = layui.layer;
+				$.ajax({
+					url : "../book/findAll.do",
+					dataType : "JSON",
+					type : "POST",
+					success : function(res) {
+						if (res.status == 0) {
+							layer.msg(res.msg);
+							console.log(res.data);
+							var str = "";
+							for (var i = 0; i < res.data.length; i++) {
+								str = "<li class='layui-nav-item' onclick='change_style(this)' notebook_id='"
+										+ res.data[i].cn_notebook_id
+										+ "'<a style='cursor:pointer;padding-left:20px;'>"
+										+ res.data[i].cn_notebook_name
+										+ "</a></li>"
+								$(".layui-nav-tree").append(str);
+							}
+						} else {
+							layer.msg(res.msg);
+							setTimeout(function() {
+								window.location.href = path+ "/login.html";
+								}, 2000);
+						}
+					},
+					error : function() {
+						layer.msg("获取失败");
+					}
+				})
+			})
+		}
+
+		$(function() {
+			findAllNote();
+			bind_search();
+		});
+
+		layui.use('element', function() {
+			var element = layui.element;
+		});
+
+		function change_style(that) {
+			var type = $(that).hasClass("layui-this");
+			if (type == true) {
+				$(that).removeClass("layui-this");
+			} else {
+				$.each($(that).parent().children(), function(item, value) {
+					$(value).removeClass("layui-this");
+				})
+				$(that).addClass("layui-this");
+				notebook_id = $(that).attr('notebook_id');
+				layui.use('form', function() {
+					var layer = layui.layer;
+					$.ajax({
+						url : "../note/findByNoteId.do",
+						data : {
+							"notebook_id" : notebook_id
+						},
+						type : "POST",
+						dataType : "JSON",
+						success : function(res) {
+							console.log(res.data);
+							$("#tbody").empty();
+							if (res.status == 0) {
+								var str = "";
+								for (var i = 0; i < res.data.length; i++) {
+									str = "<tr><td>" + res.data[i].cn_note_id
+											+ "</td><td>"
+											+ res.data[i].cn_note_title
+											+ "</td><td><button note_id='" 
+											+ res.data[i].cn_note_id
+											+ "' onclick='get_note_text(this)' class='layui-btn layui-btn-normal layui-btn-sm'>"
+										    + "<i class='layui-icon'>&#xe642;</i></button>"
+										    + "<button note_id='"
+											+ res.data[i].cn_note_id
+											+ "' onclick='delete_note(this)' class='layui-btn layui-btn-normal layui-btn-sm'>"
+										    + "<i class='layui-icon'>&#x1006;</i></button>"
+										    + "<button note_id='"
+											+ res.data[i].cn_note_id
+											+ "' onclick='share_note(this)' class='layui-btn layui-btn-normal layui-btn-sm'>"
+										    + "<i class='layui-icon'>&#xe6b1;</i></button>"
+									        + "</td></tr>";
+									$("#tbody").append(str);
+								}
+							} else {
+								layer.msg(res.msg);
+							}
+						},
+						error : function() {
+							layer.msg("获取失败");
+						}
+					})
+				})
+			}
+		}
+		
+		function get_note_text(that){
+			var note_id = $(that).attr("note_id");
+			layui.use('form', function() {
+				var layer = layui.layer;
+				$.ajax({
+					url : "../note/findByNoteIdDetail.do",
+					data : {
+						"note_id" : note_id
+					},
+					type : "POST",
+					dataType : "JSON",
+					success : function(res) {
+						if (res.status == 0) {
+							console.log(res.data);
+							if($(".layui-form-switch").hasClass("layui-form-onswitch")){
+								$(".layui-form-switch").click();
+							}
+							$("#note_title").val(res.data.cn_note_title);
+							$("#note_desc").val(res.data.cn_note_body);
+							$("#note_id").val(res.data.cn_note_id);
+						} else {
+							layer.msg(res.msg);
+						}
+					},
+					error : function() {
+						layer.msg("获取失败");
+					}
+				})
+			})
+		}
+		
+		layui.use('form', function(){
+			var form = layui.form;
+			var layer = layui.layer;
+			  //监听提交
+			form.on('submit(formDemo)', function(data){
+		    console.log(data.field);
+		    //更新笔记
+		    if(data.field.isNew != "on"){
+				$.ajax({
+					url : "../note/saveNote.do",
+					data : {
+						"note_id" : data.field.note_id,
+						"note_title" : data.field.note_title,
+						"note_body" : data.field.note_desc
+					},
+					type : "POST",
+					dataType : "JSON",
+					success : function(res) {
+						if (res.status == 0) {
+							layer.msg(res.msg);
+							$("button[note_id="+ data.field.note_id +"]").parent().prev().text(data.field.note_title);
+						} else {
+							layer.msg(res.msg);
+						}
+					},
+					error : function() {
+						layer.msg("保存失败，请稍后重试");
+					}
+				})
+		    }else{ // 新建笔记
+		    	
+				$.ajax({
+					url : "../note/saveNewNote.do",
+					data : {
+						"notebook_id" : notebook_id,
+						"note_title" : data.field.note_title,
+						"note_body" : data.field.note_desc
+					},
+					type : "POST",
+					dataType : "JSON",
+					success : function(res) {
+						console.log(res.data);
+						if (res.status == 0) {
+							layer.msg(res.msg);
+							$("li[notebook_id="+ notebook_id +"]").click().click();
+						} else {
+							layer.msg(res.msg);
+						}
+					},
+					error : function() {
+						layer.msg("保存失败，请稍后重试");
+					}
+				})
+		    }
+			return false;
+			  });
+			});
+		
+		function delete_note(that){
+			var note_id = $(that).attr("note_id");
+			layui.use('form', function() {
+				var layer = layui.layer;
+				layer.confirm('确定删除吗？', {
+					  btn: ['确定','取消'] //按钮
+				}, function(){
+					$.ajax({
+						url : "../note/deleteNote.do",
+						data : {
+							"note_id" : note_id
+						},
+						type : "POST",
+						dataType : "JSON",
+						success : function(res) {
+							if (res.status == 0) {
+								console.log(res.data);
+								$(that).parent().parent().remove();
+								layer.msg('删除成功了', {icon: 1});
+							} else {
+								layer.msg(res.msg, {icon: 2, time: 1000,});
+							}
+						},
+						error : function() {
+							layer.msg("删除失败，请稍后再试！！", {icon: 3, time: 1000,});
+						}
+					})
+				}, function(){
+				  layer.msg('已取消', {
+					icon: 4,
+				    time: 1000, //0.5s后自动关闭
+				  });
+				});
+			})
+		}
+	function share_note(that){
+		layui.use('form', function() {
+			var layer = layui.layer;
+			var type = $(that).hasClass("layui-btn-danger");
+			if(type){
+				layer.msg("该笔记已分享");
+			}else{
+				var note_id = $(that).attr("note_id");
+				layer.confirm('确定分享吗？', {
+					  btn: ['确定','取消'] //按钮
+				}, function(){
+					$.ajax({
+						url : "../share/insert.do",
+						data : {
+							"note_id" : note_id
+						},
+						type : "POST",
+						dataType : "JSON",
+						success : function(res) {
+							console.log(res);
+							if (res.status == 0) {
+								console.log(res.data);
+								$(that).removeClass("layui-btn-normal");
+								$(that).addClass("layui-btn-danger");
+								layer.msg(res.msg, {icon: 1});
+							} else {
+								layer.msg(res.msg, {icon: 2, time: 1000,});
+							}
+						},
+						error : function() {
+							layer.msg("分享失败，请稍后再试！！", {icon: 3, time: 1000,});
+						}
+					})
+				}, function(){
+				  layer.msg('已取消', {
+					icon: 4,
+				    time: 1000, //1s后自动关闭
+				  });
+				});
+			}
+		})
+	}
+	
+	function bind_search(){
+		$("#search").keydown(function(event){
+			if(event.keyCode == 13){
+				var value = $("#search").val().trim();
+				page = 1;
+				$.ajax({
+					url : "../share/search.do",
+					data : {
+						"value" : value,
+						"page" : page
+					},
+					type : "POST",
+					dataType : "JSON",
+					success : function(res) {
+						console.log(res);
+						$("#tbody").empty();
+						if (res.status == 0) {
+							var str = "";
+							for (var i = 0; i < res.data.length; i++) {
+								str = "<tr><td>" + res.data[i].cn_note_id
+										+ "</td><td>"
+										+ res.data[i].cn_share_title
+										+ "</td><td>"
+								        + "</td></tr>";
+								$("#tbody").append(str);
+							}
+							str = "<tr><td></td><td>"
+								  + "<button class='layui-btn layui-btn-primary' onclick='get_more_note(this)'>查看更多</button>"
+								  + "</td><td></td></tr>";
+							$("#tbody").append(str);
+						} else {
+							layui.use('form', function() {
+								var layer = layui.layer;
+								layer.msg(res.msg, {icon: 2, time: 1000,});
+							})
+						}
+					},
+					error : function() {
+						layui.use('form', function() {
+							var layer = layui.layer;
+							layer.msg("搜索失败，请稍后再试！！", {icon: 3, time: 1000,});
+						})
+					}
+				})
+			}
+		})
+	}
+	function get_more_note(that){
+		page = page + 1;
+		$(that).parent().parent().remove();
+		var value = $("#search").val().trim();
+		$.ajax({
+			url : "../share/search.do",
+			data : {
+				"value" : value,
+				"page" : page
+			},
+			type : "POST",
+			dataType : "JSON",
+			success : function(res) {
+				console.log(res);
+				if (res.status == 0) {
+					var str = "";
+					for (var i = 0; i < res.data.length; i++) {
+						str = "<tr><td>" + res.data[i].cn_note_id
+								+ "</td><td>"
+								+ res.data[i].cn_share_title
+								+ "</td><td>"
+						        + "</td></tr>";
+						$("#tbody").append(str);
+					}
+					str = "<tr><td></td><td>"
+						  + "<button class='layui-btn layui-btn-primary' onclick='get_more_note(this)'>查看更多</button>"
+						  + "</td><td></td></tr>";
+					$("#tbody").append(str);
+				} else {
+					layui.use('form', function() {
+						var layer = layui.layer;
+						layer.msg(res.msg, {icon: 2, time: 1000,});
+					})
+				}
+			},
+			error : function() {
+				layui.use('form', function() {
+					var layer = layui.layer;
+					layer.msg("搜索失败，请稍后再试！！", {icon: 3, time: 1000,});
+				})
+			}
+		})
+	}
+	</script>
+</body>
+</html>

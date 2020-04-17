@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+ <mapper namespace="dao.NoteDao">
+ 	<select id="findByBookId" parameterType="String" resultType="map">
+ 		SELECT cn_note_id,cn_note_title FROM cn_note WHERE cn_notebook_id=#{notebook_id} 
+ 		 AND cn_note_status_id=1
+ 	</select>
+ 	
+ 	 <select id="findByBookIdDetail" parameterType="String" resultType="map">
+ 		SELECT cn_note_id,cn_note_title,cn_note_body FROM cn_note WHERE cn_note_id=#{cn_note_id} 
+ 		 AND cn_note_status_id=1
+ 	</select>
+ 	
+ 	<update id="saveNote" parameterType="entity.Note">
+ 		UPDATE cn_note SET cn_note_title=#{cn_note_title}, cn_note_body=#{cn_note_body}, 
+ 			cn_note_last_modify_time=#{cn_note_last_modify_time} WHERE cn_note_id=#{cn_note_id}
+ 	</update>
+ 	
+ 	<insert id="saveNewNote" parameterType="entity.Note">
+ 		INSERT INTO cn_note (cn_note_id, cn_notebook_id, cn_note_status_id, cn_note_title, cn_note_body, cn_note_create_time)
+ 			VALUES (#{cn_note_id}, #{cn_notebook_id}, #{cn_note_status_id}, #{cn_note_title}, #{cn_note_body}, #{cn_note_create_time}) 
+ 	</insert>
+ 	
+ 	<update id="deleteNote" parameterType="String">
+ 		UPDATE cn_note SET cn_note_status_id=2 WHERE cn_note_id=#{cn_note_id}
+ 	</update>
+ 	
+ 	<update id="updateNoteByMap" parameterType="map">
+ 		UPDATE cn_note SET 
+ 		<trim suffixOverrides=",">
+ 			<if test="title!=null">
+				cn_note_title=#{title},
+ 			</if>
+ 			<if test="body!=null">
+ 				cn_note_body=#{body}, 
+ 			</if>
+ 			<choose>
+ 				<when test="time!=null">
+	 				cn_note_last_modify_time=#{time}
+ 				</when>
+ 				<otherwise>
+ 					cn_note_last_modify_time=unix_timestamp()
+ 				</otherwise>
+ 			</choose>
+ 		</trim>
+ 		WHERE cn_note_id=#{id}
+ 	</update>
+ 	
+ 	<delete id="deleteNotes" parameterType="map">
+ 		DELETE FROM cn_note WHERE
+ 		<if test="status!=null">
+ 			cn_note_status_id=#{status} and
+ 		</if>
+ 		cn_note_id in
+ 		<foreach collection="ids" item="id" open="(" separator="," close=")">
+ 			#{id}
+ 		</foreach>
+ 	</delete>
+ 	
+ 	
+ 	<delete id="deleteNote2" parameterType="string">
+ 		DELETE FROM cn_note WHERE cn_note_id=#{id}
+ 	</delete>
+ </mapper>
